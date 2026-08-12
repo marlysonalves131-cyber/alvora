@@ -4,95 +4,54 @@ import ThemeButton from "./ThemeButton"
 function Header({ quantidadeCarrinho = 0 }) {
 
   return (
-
     <header className="alvora-header">
 
-      <div className="header-container">
+      <Link
+        to="/"
+        className="alvora-logo"
+      >
+        <span className="logo-mark">
+          A
+        </span>
 
-        {/* LOGO */}
+        <span className="logo-name">
+          ALVORA
+        </span>
+      </Link>
 
-        <Link
-          to="/"
-          className="alvora-logo"
-        >
-          <span className="logo-mark">
-            A
-          </span>
 
-          <span className="logo-name">
-            ALVORA
-          </span>
+      <nav className="alvora-nav">
+
+        <Link to="/">
+          Início
         </Link>
 
+        <Link to="/">
+          Produtos
+        </Link>
 
-        {/* MENU */}
+        <Link to="/">
+          Blog
+        </Link>
 
-        <nav className="alvora-nav">
+        <Link to="/">
+          Contato
+        </Link>
 
-          <Link to="/">
-            Início
-          </Link>
+        <Link to="/carrinho">
+          🛒 Carrinho ({quantidadeCarrinho})
+        </Link>
 
-          <Link to="/">
-            Produtos
-          </Link>
+        <Link to="/admin">
+          🔐 Admin
+        </Link>
 
-          <Link to="/">
-            Blog
-          </Link>
+        <ThemeButton />
 
-          <Link to="/">
-            Contato
-          </Link>
-
-        </nav>
-
-
-        {/* AÇÕES */}
-
-        <div className="header-actions">
-
-          <Link
-            to="/carrinho"
-            className="header-cart"
-          >
-            <span className="cart-icon">
-              🛒
-            </span>
-
-            <span>
-              Carrinho
-            </span>
-
-            {quantidadeCarrinho > 0 && (
-
-              <strong>
-                {quantidadeCarrinho}
-              </strong>
-
-            )}
-
-          </Link>
-
-
-          <Link
-            to="/admin"
-            className="header-admin"
-          >
-            Admin
-          </Link>
-
-
-          <ThemeButton />
-
-        </div>
-
-      </div>
+      </nav>
 
     </header>
-
   )
-
 }
 
 export default Header
