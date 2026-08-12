@@ -1,9 +1,7 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 function Checkout({ carrinho }) {
-
-  const navigate = useNavigate()
 
   const [cliente, setCliente] = useState({
     nome: "",
@@ -28,12 +26,11 @@ function Checkout({ carrinho }) {
             .replace(",", ".")
         ) || 0
 
-      return soma +
-        preco * item.quantidade
-
+      return soma + preco * item.quantidade
     },
     0
   )
+
 
   function formatarPreco(valor) {
 
@@ -47,6 +44,7 @@ function Checkout({ carrinho }) {
 
   }
 
+
   function alterarCampo(e) {
 
     const { name, value } = e.target
@@ -57,6 +55,7 @@ function Checkout({ carrinho }) {
     })
 
   }
+
 
   function finalizarPedido(e) {
 
@@ -77,8 +76,8 @@ function Checkout({ carrinho }) {
       )
 
       return
-
     }
+
 
     const pedidosSalvos =
       localStorage.getItem("pedidos")
@@ -88,15 +87,14 @@ function Checkout({ carrinho }) {
         ? JSON.parse(pedidosSalvos)
         : []
 
+
     const novoPedido = {
 
-      id:
-        Date.now(),
+      id: Date.now(),
 
       cliente,
 
-      produtos:
-        carrinho,
+      produtos: carrinho,
 
       total,
 
@@ -110,6 +108,7 @@ function Checkout({ carrinho }) {
 
     }
 
+
     localStorage.setItem(
       "pedidos",
       JSON.stringify([
@@ -118,9 +117,11 @@ function Checkout({ carrinho }) {
       ])
     )
 
+
     setEnviado(true)
 
   }
+
 
   if (carrinho.length === 0) {
 
@@ -152,8 +153,8 @@ function Checkout({ carrinho }) {
       </main>
 
     )
-
   }
+
 
   if (enviado) {
 
@@ -189,8 +190,8 @@ function Checkout({ carrinho }) {
       </main>
 
     )
-
   }
+
 
   return (
 
