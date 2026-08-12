@@ -4483,4 +4483,90 @@ footer {
     align-items: center;
   }
 
+}/* CORREÇÃO DO LOGO NO CELULAR */
+
+.alvora-logo {
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.logo-mark {
+  width: 43px !important;
+  height: 43px !important;
+
+  min-width: 43px !important;
+  min-height: 43px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  overflow: hidden;
+
+  border: 1px solid #c98b2d !important;
+  border-radius: 50% !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      #fffdf8,
+      #f7ead7
+    ) !important;
+
+  color: #b87318 !important;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif !important;
+
+  font-size: 22px !important;
+  font-weight: 500 !important;
+
+  line-height: 1 !important;
+
+  letter-spacing: 0 !important;
+}
+
+.logo-name {
+  display: inline-block !important;
+
+  color: #542b12 !important;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif !important;
+
+  font-size: 25px !important;
+
+  font-weight: 600 !important;
+
+  letter-spacing: 4px !important;
+
+  line-height: 1 !important;
+}
+
+@media (max-width: 750px) {
+
+  .alvora-logo {
+    width: auto !important;
+    justify-content: center !important;
+  }
+
+  .logo-mark {
+    width: 38px !important;
+    height: 38px !important;
+
+    min-width: 38px !important;
+    min-height: 38px !important;
+
+    font-size: 20px !important;
+  }
+
+  .logo-name {
+    font-size: 21px !important;
+    letter-spacing: 3px !important;
+  }
+
 }
