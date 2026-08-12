@@ -2,53 +2,60 @@ import { Link } from "react-router-dom"
 import ThemeButton from "./ThemeButton"
 
 function Header({ quantidadeCarrinho = 0 }) {
-
   return (
     <header className="alvora-header">
 
-      <Link
-        to="/"
-        className="alvora-logo"
-      >
-        <span className="logo-mark">
-          A
-        </span>
+      <div className="alvora-header-inner">
 
-        <span className="logo-name">
-          ALVORA
-        </span>
-      </Link>
+        {/* LOGO */}
 
+        <Link
+          to="/"
+          className="alvora-logo"
+        >
+          <span className="logo-mark">
+            A
+          </span>
 
-      <nav className="alvora-nav">
-
-        <Link to="/">
-          Início
+          <span className="logo-name">
+            ALVORA
+          </span>
         </Link>
 
-        <Link to="/">
-          Produtos
-        </Link>
 
-        <Link to="/">
-          Blog
-        </Link>
+        {/* MENU */}
 
-        <Link to="/">
-          Contato
-        </Link>
+        <nav className="alvora-nav">
 
-        <Link to="/carrinho">
-          🛒 Carrinho ({quantidadeCarrinho})
-        </Link>
+          <Link to="/">
+            Início
+          </Link>
 
-        <Link to="/admin">
-          🔐 Admin
-        </Link>
+          <Link to="/">
+            Produtos
+          </Link>
 
-        <ThemeButton />
+          <Link to="/">
+            Blog
+          </Link>
 
-      </nav>
+          <Link to="/">
+            Contato
+          </Link>
+
+          <Link to="/carrinho">
+            🛒 Carrinho ({quantidadeCarrinho})
+          </Link>
+
+          <Link to="/admin">
+            🔐 Admin
+          </Link>
+
+          <ThemeButton />
+
+        </nav>
+
+      </div>
 
     </header>
   )
