@@ -6,112 +6,167 @@ function Carrinho({
   removerProduto
 }) {
 
-  function converterPreco(preco) {
-
-    return Number(
-      String(preco)
-        .replace("R$", "")
-        .replace(/\s/g, "")
-        .replace(/\./g, "")
-        .replace(",", ".")
-    )
-
-  }
-
-
   const total = carrinho.reduce(
     (soma, item) => {
 
       const preco =
-        converterPreco(item.preco)
+        Number(
+          String(item.preco)
+            .replace("R$", "")
+            .replace(/\./g, "")
+            .replace(",", ".")
+        ) || 0
 
       return soma +
         preco * item.quantidade
-
     },
     0
   )
 
+  function formatarPreco(valor) {
+    return valor.toLocaleString(
+      "pt-BR",
+      {
+        style: "currency",
+        currency: "BRL"
+      }
+    )
+  }
 
-  return (
+  if (carrinho.length === 0) {
 
-    <section className="carrinho-page">
+    return (
 
-      <h1>
-        🛒 Meu Carrinho
-      </h1>
-
-
-      {carrinho.length === 0 ? (
+      <main className="carrinho-page">
 
         <div className="carrinho-vazio">
 
-          <h2>
-            Seu carrinho está vazio.
-          </h2>
+          <div className="carrinho-vazio-icon">
+            🛍️
+          </div>
+
+          <span>
+            SEU CARRINHO
+          </span>
+
+          <h1>
+            Seu carrinho está vazio
+          </h1>
 
           <p>
-            Encontre um produto na ALVORA
-            e adicione ao seu carrinho.
+            Explore nossos produtos e
+            encontre algo especial para você.
           </p>
 
-          <Link to="/">
-            ← Continuar comprando
+          <Link
+            to="/"
+            className="carrinho-voltar"
+          >
+            Explorar produtos
           </Link>
 
         </div>
 
-      ) : (
+      </main>
 
-        <>
+    )
+  }
 
-          <div className="carrinho-lista">
+  return (
+
+    <main className="carrinho-page">
+
+      <div className="carrinho-container">
+
+        {/* CABEÇALHO */}
+
+        <div className="carrinho-header">
+
+          <span>
+            ALVORA SHOP
+          </span>
+
+          <h1>
+            Seu carrinho
+          </h1>
+
+          <p>
+            Confira seus produtos antes
+            de finalizar a compra.
+          </p>
+
+        </div>
+
+
+        <div className="carrinho-layout">
+
+          {/* PRODUTOS */}
+
+          <section className="carrinho-produtos">
 
             {carrinho.map(
               (item, index) => {
 
                 const preco =
-                  converterPreco(
-                    item.preco
-                  )
+                  Number(
+                    String(item.preco)
+                      .replace("R$", "")
+                      .replace(/\./g, "")
+                      .replace(",", ".")
+                  ) || 0
 
                 const subtotal =
                   preco * item.quantidade
 
-
                 return (
 
-                  <div
-                    className="item-carrinho"
+                  <article
+                    className="carrinho-item"
                     key={`${item.nome}-${index}`}
                   >
 
-                    <img
-                      src={item.imagem}
-                      alt={item.nome}
-                    />
+                    {/* IMAGEM */}
+
+                    <div className="carrinho-item-imagem">
+
+                      {item.imagem ? (
+
+                        <img
+                          src={item.imagem}
+                          alt={item.nome}
+                        />
+
+                      ) : (
+
+                        <span>
+                          ALVORA
+                        </span>
+
+                      )}
+
+                    </div>
 
 
-                    <div className="item-info">
+                    {/* INFORMAÇÕES */}
 
-                      <h3>
-                        {item.nome}
-                      </h3>
+                    <div className="carrinho-item-info">
 
-
-                      <p>
+                      <span>
                         {item.categoria}
-                      </p>
+                      </span>
 
+                      <h2>
+                        {item.nome}
+                      </h2>
 
                       <p>
-                        Preço unitário:
-                        {" "}
                         {item.preco}
                       </p>
 
 
-                      <div className="quantidade">
+                      {/* QUANTIDADE */}
+
+                      <div className="carrinho-quantidade">
 
                         <button
                           onClick={() =>
@@ -120,18 +175,13 @@ function Carrinho({
                               item.quantidade - 1
                             )
                           }
-                          disabled={
-                            item.quantidade <= 1
-                          }
                         >
                           −
                         </button>
 
-
                         <strong>
                           {item.quantidade}
                         </strong>
-
 
                         <button
                           onClick={() =>
@@ -140,84 +190,112 @@ function Carrinho({
                               item.quantidade + 1
                             )
                           }
-                          disabled={
-                            item.quantidade >=
-                            Number(
-                              item.estoque
-                            )
-                          }
                         >
                           +
                         </button>
 
                       </div>
 
+                    </div>
 
-                      <h3>
-                        Subtotal: R${" "}
-                        {subtotal
-                          .toFixed(2)
-                          .replace(".", ",")}
-                      </h3>
 
+                    {/* SUBTOTAL */}
+
+                    <div className="carrinho-item-total">
+
+                      <strong>
+                        {formatarPreco(
+                          subtotal
+                        )}
+                      </strong>
 
                       <button
                         onClick={() =>
                           removerProduto(index)
                         }
+                        className="carrinho-remover"
                       >
-                        🗑️ Remover
+                        Remover
                       </button>
 
                     </div>
 
-                  </div>
+                  </article>
 
                 )
-
               }
             )}
 
-          </div>
+          </section>
 
 
-          <div className="carrinho-resumo">
+          {/* RESUMO */}
+
+          <aside className="carrinho-resumo">
+
+            <span>
+              RESUMO
+            </span>
 
             <h2>
-              Resumo da compra
+              Sua compra
             </h2>
 
 
-            <h3>
-              Total: R${" "}
-              {total
-                .toFixed(2)
-                .replace(".", ",")}
-            </h3>
+            <div className="resumo-linha">
+
+              <span>
+                Produtos
+              </span>
+
+              <strong>
+                {carrinho.reduce(
+                  (total, item) =>
+                    total + item.quantidade,
+                  0
+                )}
+              </strong>
+
+            </div>
 
 
-           <Link
-  to="/checkout"
-  className="botao-finalizar"
->
-  Finalizar compra
-</Link>
-          </div>
+            <div className="resumo-linha resumo-total">
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                {formatarPreco(total)}
+              </strong>
+
+            </div>
 
 
-          <Link to="/">
-            ← Continuar comprando
-          </Link>
+            <Link
+              to="/checkout"
+              className="carrinho-finalizar"
+            >
+              Finalizar compra
+            </Link>
 
-        </>
 
-      )}
+            <Link
+              to="/"
+              className="carrinho-continuar"
+            >
+              Continuar comprando
+            </Link>
 
-    </section>
+          </aside>
+
+        </div>
+
+      </div>
+
+    </main>
 
   )
-
 }
-
 
 export default Carrinho

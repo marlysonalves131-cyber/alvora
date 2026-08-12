@@ -5,54 +5,94 @@ function Header({ quantidadeCarrinho = 0 }) {
 
   return (
 
-    <header>
+    <header className="alvora-header">
 
-      <h1>
-        ALVORA
-      </h1>
+      <div className="header-container">
 
+        {/* LOGO */}
 
-      <nav>
+        <Link
+          to="/"
+          className="alvora-logo"
+        >
+          <span className="logo-mark">
+            A
+          </span>
 
-        <Link to="/">
-          Início
+          <span className="logo-name">
+            ALVORA
+          </span>
         </Link>
 
 
-        <Link to="/">
-          Produtos
-        </Link>
+        {/* MENU */}
+
+        <nav className="alvora-nav">
+
+          <Link to="/">
+            Início
+          </Link>
+
+          <Link to="/">
+            Produtos
+          </Link>
+
+          <Link to="/">
+            Blog
+          </Link>
+
+          <Link to="/">
+            Contato
+          </Link>
+
+        </nav>
 
 
-        <Link to="/">
-          Blog
-        </Link>
+        {/* AÇÕES */}
+
+        <div className="header-actions">
+
+          <Link
+            to="/carrinho"
+            className="header-cart"
+          >
+            <span className="cart-icon">
+              🛒
+            </span>
+
+            <span>
+              Carrinho
+            </span>
+
+            {quantidadeCarrinho > 0 && (
+
+              <strong>
+                {quantidadeCarrinho}
+              </strong>
+
+            )}
+
+          </Link>
 
 
-        <Link to="/">
-          Contato
-        </Link>
+          <Link
+            to="/admin"
+            className="header-admin"
+          >
+            Admin
+          </Link>
 
 
-        <Link to="/carrinho">
-          🛒 Carrinho ({quantidadeCarrinho})
-        </Link>
+          <ThemeButton />
 
+        </div>
 
-        <Link to="/admin">
-          🔐 Admin
-        </Link>
-
-
-        <ThemeButton />
-
-      </nav>
+      </div>
 
     </header>
 
   )
 
 }
-
 
 export default Header

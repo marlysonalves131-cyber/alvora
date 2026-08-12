@@ -1,50 +1,32 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 function Checkout({ carrinho }) {
 
-  const [dados, setDados] = useState({
+  const navigate = useNavigate()
+
+  const [cliente, setCliente] = useState({
     nome: "",
-    telefone: "",
     email: "",
-    cep: "",
+    telefone: "",
     endereco: "",
-    numero: "",
-    bairro: "",
     cidade: "",
     estado: "",
-    pagamento: ""
+    cep: ""
   })
 
-
-  function alterarCampo(e) {
-
-    setDados({
-      ...dados,
-      [e.target.name]: e.target.value
-    })
-
-  }
-
-
-  function converterPreco(preco) {
-
-    return Number(
-      String(preco)
-        .replace("R$", "")
-        .replace(/\s/g, "")
-        .replace(/\./g, "")
-        .replace(",", ".")
-    )
-
-  }
-
+  const [enviado, setEnviado] = useState(false)
 
   const total = carrinho.reduce(
     (soma, item) => {
 
       const preco =
-        converterPreco(item.preco)
+        Number(
+          String(item.preco)
+            .replace("R$", "")
+            .replace(/\./g, "")
+            .replace(",", ".")
+        ) || 0
 
       return soma +
         preco * item.quantidade
@@ -53,410 +35,424 @@ function Checkout({ carrinho }) {
     0
   )
 
+  function formatarPreco(valor) {
+
+    return valor.toLocaleString(
+      "pt-BR",
+      {
+        style: "currency",
+        currency: "BRL"
+      }
+    )
+
+  }
+
+  function alterarCampo(e) {
+
+    const { name, value } = e.target
+
+    setCliente({
+      ...cliente,
+      [name]: value
+    })
+
+  }
 
   function finalizarPedido(e) {
 
     e.preventDefault()
 
-
-    if (!dados.pagamento) {
+    if (
+      !cliente.nome ||
+      !cliente.email ||
+      !cliente.telefone ||
+      !cliente.endereco ||
+      !cliente.cidade ||
+      !cliente.estado ||
+      !cliente.cep
+    ) {
 
       alert(
-        "Selecione uma forma de pagamento."
+        "Preencha todos os campos."
       )
 
       return
 
     }
 
+    const pedidosSalvos =
+      localStorage.getItem("pedidos")
 
-   const pedidos =
-  JSON.parse(localStorage.getItem("pedidos")) || []
+    const pedidos =
+      pedidosSalvos
+        ? JSON.parse(pedidosSalvos)
+        : []
 
-const numeroPedido =
-  `ALV-${String(pedidos.length + 1).padStart(4, "0")}`
+    const novoPedido = {
 
-const novoPedido = {
+      id:
+        Date.now(),
 
-  numero: numeroPedido,
+      cliente,
 
-  cliente: dados,
+      produtos:
+        carrinho,
 
-  produtos: carrinho,
+      total,
 
-  total: total,
+      data:
+        new Date().toLocaleString(
+          "pt-BR"
+        ),
 
-  pagamento: dados.pagamento,
+      status:
+        "Novo pedido"
 
-  status: "Aguardando pagamento",
+    }
 
-  data: new Date().toLocaleString("pt-BR")
+    localStorage.setItem(
+      "pedidos",
+      JSON.stringify([
+        ...pedidos,
+        novoPedido
+      ])
+    )
 
-}
-
-pedidos.push(novoPedido)
-
-localStorage.setItem(
-  "pedidos",
-  JSON.stringify(pedidos)
-)
-localStorage.removeItem("carrinho")
-alert(
-  `Pedido ${numeroPedido} realizado com sucesso!`
-)
+    setEnviado(true)
 
   }
-
 
   if (carrinho.length === 0) {
 
     return (
 
-      <section className="checkout">
+      <main className="checkout-page">
 
-        <h1>
-          Checkout
-        </h1>
+        <div className="checkout-vazio">
 
-        <p>
-          Seu carrinho está vazio.
-        </p>
+          <div>
+            🛒
+          </div>
 
-        <Link to="/">
-          ← Voltar para a loja
-        </Link>
+          <h1>
+            Seu carrinho está vazio
+          </h1>
 
-      </section>
+          <p>
+            Adicione algum produto antes
+            de finalizar a compra.
+          </p>
+
+          <Link to="/">
+            Explorar produtos
+          </Link>
+
+        </div>
+
+      </main>
 
     )
 
   }
 
+  if (enviado) {
+
+    return (
+
+      <main className="checkout-page">
+
+        <div className="checkout-sucesso">
+
+          <div className="checkout-sucesso-icon">
+            ✓
+          </div>
+
+          <span>
+            PEDIDO RECEBIDO
+          </span>
+
+          <h1>
+            Obrigado pela sua compra!
+          </h1>
+
+          <p>
+            Seu pedido foi registrado
+            com sucesso.
+          </p>
+
+          <Link to="/">
+            Voltar para a loja
+          </Link>
+
+        </div>
+
+      </main>
+
+    )
+
+  }
 
   return (
 
-    <section className="checkout">
-
-      <h1>
-        🛍️ Finalizar compra
-      </h1>
-
+    <main className="checkout-page">
 
       <div className="checkout-container">
 
+        {/* CABEÇALHO */}
 
-        <form
-          className="checkout-form"
-          onSubmit={finalizarPedido}
-        >
+        <div className="checkout-header">
 
-          <h2>
-            📦 Dados para entrega
-          </h2>
+          <span>
+            ALVORA SHOP
+          </span>
 
+          <h1>
+            Finalizar compra
+          </h1>
 
-          <label>
-            Nome completo
-          </label>
+          <p>
+            Preencha seus dados para
+            registrar o pedido.
+          </p>
 
-          <input
-            type="text"
-            name="nome"
-            value={dados.nome}
-            onChange={alterarCampo}
-            required
-          />
+        </div>
 
 
-          <label>
-            Telefone / WhatsApp
-          </label>
+        <div className="checkout-layout">
 
-          <input
-            type="tel"
-            name="telefone"
-            value={dados.telefone}
-            onChange={alterarCampo}
-            required
-          />
+          {/* FORMULÁRIO */}
 
-
-          <label>
-            E-mail
-          </label>
-
-          <input
-            type="email"
-            name="email"
-            value={dados.email}
-            onChange={alterarCampo}
-            required
-          />
-
-
-          <label>
-            CEP
-          </label>
-
-          <input
-            type="text"
-            name="cep"
-            value={dados.cep}
-            onChange={alterarCampo}
-            placeholder="00000-000"
-            required
-          />
-
-
-          <label>
-            Endereço
-          </label>
-
-          <input
-            type="text"
-            name="endereco"
-            value={dados.endereco}
-            onChange={alterarCampo}
-            required
-          />
-
-
-          <label>
-            Número
-          </label>
-
-          <input
-            type="text"
-            name="numero"
-            value={dados.numero}
-            onChange={alterarCampo}
-            required
-          />
-
-
-          <label>
-            Bairro
-          </label>
-
-          <input
-            type="text"
-            name="bairro"
-            value={dados.bairro}
-            onChange={alterarCampo}
-            required
-          />
-
-
-          <label>
-            Cidade
-          </label>
-
-          <input
-            type="text"
-            name="cidade"
-            value={dados.cidade}
-            onChange={alterarCampo}
-            required
-          />
-
-
-          <label>
-            Estado
-          </label>
-
-          <input
-            type="text"
-            name="estado"
-            value={dados.estado}
-            onChange={alterarCampo}
-            maxLength="2"
-            placeholder="SE"
-            required
-          />
-
-
-          <h2>
-            💳 Forma de pagamento
-          </h2>
-
-
-          <div className="pagamentos">
-
-
-            <label className="pagamento">
-
-              <input
-                type="radio"
-                name="pagamento"
-                value="Pix"
-                checked={
-                  dados.pagamento === "Pix"
-                }
-                onChange={alterarCampo}
-              />
-
-              <span>
-                💠 Pix
-              </span>
-
-            </label>
-
-
-            <label className="pagamento">
-
-              <input
-                type="radio"
-                name="pagamento"
-                value="Cartão de crédito"
-                checked={
-                  dados.pagamento ===
-                  "Cartão de crédito"
-                }
-                onChange={alterarCampo}
-              />
-
-              <span>
-                💳 Cartão de crédito
-              </span>
-
-            </label>
-
-
-            <label className="pagamento">
-
-              <input
-                type="radio"
-                name="pagamento"
-                value="Cartão de débito"
-                checked={
-                  dados.pagamento ===
-                  "Cartão de débito"
-                }
-                onChange={alterarCampo}
-              />
-
-              <span>
-                💳 Cartão de débito
-              </span>
-
-            </label>
-
-
-            <label className="pagamento">
-
-              <input
-                type="radio"
-                name="pagamento"
-                value="Boleto"
-                checked={
-                  dados.pagamento ===
-                  "Boleto"
-                }
-                onChange={alterarCampo}
-              />
-
-              <span>
-                🧾 Boleto
-              </span>
-
-            </label>
-
-          </div>
-
-
-          <button
-            type="submit"
-            className="botao-finalizar"
+          <form
+            className="checkout-form"
+            onSubmit={finalizarPedido}
           >
-            Continuar
-          </button>
 
-        </form>
-
-
-        <div className="checkout-resumo">
-
-          <h2>
-            🛒 Seu pedido
-          </h2>
+            <h2>
+              Seus dados
+            </h2>
 
 
-          {carrinho.map(
-            (item, index) => {
+            <div className="checkout-fields">
 
-              const preco =
-                converterPreco(item.preco)
+              <div className="checkout-field">
 
-              const subtotal =
-                preco * item.quantidade
+                <label>
+                  Nome completo
+                </label>
 
+                <input
+                  type="text"
+                  name="nome"
+                  placeholder="Seu nome"
+                  value={cliente.nome}
+                  onChange={alterarCampo}
+                />
 
-              return (
-
-                <div
-                  key={`${item.nome}-${index}`}
-                  className="checkout-item"
-                >
-
-                  <img
-                    src={item.imagem}
-                    alt={item.nome}
-                  />
+              </div>
 
 
-                  <div>
+              <div className="checkout-field">
 
-                    <h3>
-                      {item.nome}
-                    </h3>
+                <label>
+                  E-mail
+                </label>
 
-                    <p>
-                      Quantidade:
-                      {" "}
-                      {item.quantidade}
-                    </p>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="seu@email.com"
+                  value={cliente.email}
+                  onChange={alterarCampo}
+                />
 
-                    <strong>
-                      R${" "}
-                      {subtotal
-                        .toFixed(2)
-                        .replace(".", ",")}
-                    </strong>
+              </div>
+
+
+              <div className="checkout-field">
+
+                <label>
+                  Telefone
+                </label>
+
+                <input
+                  type="tel"
+                  name="telefone"
+                  placeholder="(00) 00000-0000"
+                  value={cliente.telefone}
+                  onChange={alterarCampo}
+                />
+
+              </div>
+
+
+              <div className="checkout-field">
+
+                <label>
+                  CEP
+                </label>
+
+                <input
+                  type="text"
+                  name="cep"
+                  placeholder="00000-000"
+                  value={cliente.cep}
+                  onChange={alterarCampo}
+                />
+
+              </div>
+
+
+              <div className="checkout-field checkout-field-full">
+
+                <label>
+                  Endereço
+                </label>
+
+                <input
+                  type="text"
+                  name="endereco"
+                  placeholder="Rua, número e complemento"
+                  value={cliente.endereco}
+                  onChange={alterarCampo}
+                />
+
+              </div>
+
+
+              <div className="checkout-field">
+
+                <label>
+                  Cidade
+                </label>
+
+                <input
+                  type="text"
+                  name="cidade"
+                  placeholder="Sua cidade"
+                  value={cliente.cidade}
+                  onChange={alterarCampo}
+                />
+
+              </div>
+
+
+              <div className="checkout-field">
+
+                <label>
+                  Estado
+                </label>
+
+                <input
+                  type="text"
+                  name="estado"
+                  placeholder="SE"
+                  maxLength="2"
+                  value={cliente.estado}
+                  onChange={alterarCampo}
+                />
+
+              </div>
+
+            </div>
+
+
+            <button
+              type="submit"
+              className="checkout-finalizar"
+            >
+              Confirmar pedido
+            </button>
+
+          </form>
+
+
+          {/* RESUMO */}
+
+          <aside className="checkout-resumo">
+
+            <span>
+              RESUMO
+            </span>
+
+            <h2>
+              Seu pedido
+            </h2>
+
+
+            <div className="checkout-lista">
+
+              {carrinho.map(
+                (item, index) => (
+
+                  <div
+                    className="checkout-item"
+                    key={`${item.nome}-${index}`}
+                  >
+
+                    <div className="checkout-item-imagem">
+
+                      {item.imagem ? (
+
+                        <img
+                          src={item.imagem}
+                          alt={item.nome}
+                        />
+
+                      ) : (
+
+                        <span>
+                          A
+                        </span>
+
+                      )}
+
+                    </div>
+
+
+                    <div>
+
+                      <strong>
+                        {item.nome}
+                      </strong>
+
+                      <p>
+                        Quantidade:
+                        {" "}
+                        {item.quantidade}
+                      </p>
+
+                    </div>
 
                   </div>
 
-                </div>
+                )
+              )}
 
-              )
-
-            }
-          )}
+            </div>
 
 
-          <hr />
+            <div className="checkout-total">
 
+              <span>
+                Total
+              </span>
 
-          <h2>
-            Total: R${" "}
-            {total
-              .toFixed(2)
-              .replace(".", ",")}
-          </h2>
+              <strong>
+                {formatarPreco(total)}
+              </strong>
 
+            </div>
 
-          <Link to="/carrinho">
-            ← Voltar ao carrinho
-          </Link>
+          </aside>
 
         </div>
 
       </div>
 
-    </section>
+    </main>
 
   )
 
 }
-
 
 export default Checkout

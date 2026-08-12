@@ -8,7 +8,6 @@ import {
 } from "react-router-dom"
 
 import Header from "./components/Header"
-import Banner from "./components/Banner"
 import Produtos from "./components/Produtos"
 import Footer from "./components/Footer"
 import Carrinho from "./components/Carrinho"
@@ -17,14 +16,13 @@ import Produto from "./pages/Produto"
 import Pedidos from "./pages/Pedidos"
 import Admin from "./admin/Admin"
 import LoginAdmin from "./admin/LoginAdmin"
-
+import Hero from "./components/Hero"
 
 function App() {
 
   const [adminLogado, setAdminLogado] = useState(false)
 
   const [carrinho, setCarrinho] = useState([])
-
 
   function adicionarAoCarrinho(produto, quantidade) {
 
@@ -34,7 +32,6 @@ function App() {
         carrinhoAtual.find(
           (item) => item.nome === produto.nome
         )
-
 
       if (produtoExistente) {
 
@@ -52,15 +49,11 @@ function App() {
                 Number(item.estoque)
               )
             }
-
           }
 
           return item
-
         })
-
       }
-
 
       return [
         ...carrinhoAtual,
@@ -69,11 +62,8 @@ function App() {
           quantidade
         }
       ]
-
     })
-
   }
-
 
   function alterarQuantidade(index, novaQuantidade) {
 
@@ -95,17 +85,12 @@ function App() {
             ...item,
             quantidade: quantidadeFinal
           }
-
         }
 
         return item
-
       })
-
     })
-
   }
-
 
   function removerProduto(index) {
 
@@ -114,9 +99,7 @@ function App() {
         (_, i) => i !== index
       )
     )
-
   }
-
 
   const quantidadeCarrinho =
     carrinho.reduce(
@@ -124,7 +107,6 @@ function App() {
         total + item.quantidade,
       0
     )
-
 
   return (
 
@@ -136,22 +118,21 @@ function App() {
         }
       />
 
-
       <Routes>
+
+        {/* Página inicial */}
 
         <Route
           path="/"
           element={
             <>
-              <Banner />
+              <Hero />
               <Produtos />
             </>
           }
         />
-<Route 
-  path="/admin/pedidos" 
-  element={<Pedidos />} 
-/>
+
+        {/* Produtos */}
 
         <Route
           path="/produto"
@@ -164,6 +145,7 @@ function App() {
           }
         />
 
+        {/* Carrinho */}
 
         <Route
           path="/carrinho"
@@ -180,6 +162,18 @@ function App() {
           }
         />
 
+        {/* Checkout */}
+
+        <Route
+          path="/checkout"
+          element={
+            <Checkout
+              carrinho={carrinho}
+            />
+          }
+        />
+
+        {/* Área administrativa */}
 
         <Route
           path="/admin"
@@ -195,24 +189,22 @@ function App() {
             )
           }
         />
-<Route
-  path="/checkout"
-  element={
-    <Checkout
-      carrinho={carrinho}
-    />
-  }
-/>
-      </Routes>
 
+        {/* Pedidos */}
+
+        <Route
+          path="/admin/pedidos"
+          element={
+            <Pedidos />
+          }
+        />
+
+      </Routes>
 
       <Footer />
 
     </BrowserRouter>
-
   )
-
 }
-
 
 export default App

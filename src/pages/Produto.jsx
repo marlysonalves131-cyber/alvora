@@ -1,215 +1,247 @@
-import { useState } from "react"
-import { useLocation, Link } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 
-function Produto({ adicionarAoCarrinho }) {
+function Produtos() {
 
-  const location = useLocation()
+  const [produtos, setProdutos] = useState([])
 
-  const produto = location.state?.produto
+  const [categoriaSelecionada, setCategoriaSelecionada] =
+    useState("Todos")
 
-  const [quantidade, setQuantidade] = useState(1)
+  useEffect(() => {
 
+    const produtosSalvos =
+      localStorage.getItem("produtos")
 
-  if (!produto) {
+    if (produtosSalvos) {
 
-    return (
-
-      <section className="produto-page">
-
-        <h1>
-          Produto não encontrado
-        </h1>
-
-        <p>
-          Volte para a loja e escolha um produto.
-        </p>
-
-        <Link to="/">
-          ← Voltar para a loja
-        </Link>
-
-      </section>
-
-    )
-
-  }
-
-
-  const estoque = Number(
-    produto.estoque || 0
-  )
-
-
-  function aumentarQuantidade() {
-
-    if (quantidade < estoque) {
-
-      setQuantidade(
-        quantidade + 1
+      setProdutos(
+        JSON.parse(produtosSalvos)
       )
 
     }
 
-  }
+  }, [])
 
-
-  function diminuirQuantidade() {
-
-    if (quantidade > 1) {
-
-      setQuantidade(
-        quantidade - 1
-      )
-
-    }
-
-  }
-
-
-  function adicionar() {
-
-    adicionarAoCarrinho(
-      produto,
-      quantidade
+  const categorias = [
+    "Todos",
+    ...new Set(
+      produtos
+        .map((produto) => produto.categoria)
+        .filter(Boolean)
     )
+  ]
 
-    alert(
-      "Produto adicionado ao carrinho! 🛒"
-    )
-
-  }
-
+  const produtosFiltrados =
+    categoriaSelecionada === "Todos"
+      ? produtos
+      : produtos.filter(
+          (produto) =>
+            produto.categoria ===
+            categoriaSelecionada
+        )
 
   return (
 
-    <section className="produto-page">
+    <section className="alvora-produtos">
 
-      <div className="produto-detalhes">
+      <div className="produtos-container">
 
+        {/* CABEÇALHO */}
 
-        <img
-          src={produto.imagem}
-          alt={produto.nome}
-          className="produto-imagem"
-        />
+        <div className="produtos-header">
 
-
-        <div className="produto-info">
-
-          <span className="produto-categoria">
-            {produto.categoria}
+          <span className="produtos-label">
+            COLEÇÃO ALVORA
           </span>
 
-
-          <h1>
-            {produto.nome}
-          </h1>
-
-
-          <p>
-            {produto.descricao ||
-              "Confira os detalhes deste produto."}
-          </p>
-
-
           <h2>
-            {produto.preco}
+            Peças que combinam com você
           </h2>
 
-
           <p>
-            📦 Estoque disponível: {estoque}
+            Descubra acessórios selecionados
+            para deixar seu estilo ainda mais
+            marcante.
           </p>
 
-
-          {estoque > 0 ? (
-
-            <>
-
-              <h3>
-                Quantidade
-              </h3>
+        </div>
 
 
-              <div className="quantidade">
+        {/* CATEGORIAS */}
 
-                <button
-                  onClick={
-                    diminuirQuantidade
-                  }
-                  disabled={
-                    quantidade <= 1
-                  }
-                >
-                  −
-                </button>
+        {produtos.length > 0 && (
 
+          <div className="produtos-categorias">
 
-                <strong>
-                  {quantidade}
-                </strong>
-
+            {categorias.map(
+              (categoria) => (
 
                 <button
-                  onClick={
-                    aumentarQuantidade
+                  key={categoria}
+                  className={
+                    categoriaSelecionada ===
+                    categoria
+                      ? "categoria-ativa"
+                      : ""
                   }
-                  disabled={
-                    quantidade >= estoque
+                  onClick={() =>
+                    setCategoriaSelecionada(
+                      categoria
+                    )
                   }
                 >
-                  +
+                  {categoria}
                 </button>
 
-              </div>
+              )
+            )}
+
+          </div>
+
+        )}
 
 
-              <p>
-                Você selecionou:{" "}
+        {/* PRODUTOS */}
 
-                <strong>
-                  {quantidade} unidade(s)
-                </strong>
-              </p>
+        {produtosFiltrados.length === 0 ? (
 
+          <div className="produtos-vazio">
 
-              <button
-                className="botao-carrinho"
-                onClick={adicionar}
-              >
-                🛒 Adicionar ao carrinho
-              </button>
-
-
-              <br />
-
-
-              <Link to="/carrinho">
-                🛒 Ver carrinho
-              </Link>
-
-            </>
-
-          ) : (
+            <div className="vazio-icon">
+              A
+            </div>
 
             <h3>
-              ❌ Produto esgotado
+              Nenhum produto disponível
             </h3>
 
-          )}
+            <p>
+              Os produtos da ALVORA aparecerão
+              aqui assim que forem cadastrados.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <div className="produtos-grid">
+
+            {produtosFiltrados.map(
+              (produto, index) => (
+
+                <article
+                  className="produto-card-alvora"
+                  key={
+                    produto.nome + index
+                  }
+                >
+
+                  {/* IMAGEM */}
+
+                  <Link
+                    to={`/produto?nome=${encodeURIComponent(
+                      produto.nome
+                    )}`}
+                    className="produto-imagem-alvora"
+                  >
+
+                    {produto.imagem ? (
+
+                      <img
+                        src={produto.imagem}
+                        alt={produto.nome}
+                      />
+
+                    ) : (
+
+                      <div className="produto-sem-imagem">
+                        ALVORA
+                      </div>
+
+                    )}
+
+                    {Number(
+                      produto.estoque
+                    ) <= 0 && (
+
+                      <span className="produto-esgotado">
+                        Esgotado
+                      </span>
+
+                    )}
+
+                  </Link>
 
 
-          <br />
+                  {/* INFORMAÇÕES */}
+
+                  <div className="produto-card-info">
+
+                    <span className="produto-categoria">
+                      {produto.categoria ||
+                        "Acessório"}
+                    </span>
+
+                    <Link
+                      to={`/produto?nome=${encodeURIComponent(
+                        produto.nome
+                      )}`}
+                      className="produto-nome"
+                    >
+                      {produto.nome}
+                    </Link>
+
+                    <p className="produto-descricao">
+
+                      {produto.descricao ||
+                        "Produto exclusivo ALVORA."}
+
+                    </p>
 
 
-          <Link
-            to="/"
-            className="voltar"
-          >
-            ← Voltar para produtos
-          </Link>
+                    <div className="produto-card-bottom">
 
-        </div>
+                      <strong className="produto-preco">
+                        {produto.preco}
+                      </strong>
+
+                      <span className="produto-estoque">
+
+                        {Number(
+                          produto.estoque
+                        ) > 0
+
+                          ? `${produto.estoque} disponível`
+                          : "Sem estoque"}
+
+                      </span>
+
+                    </div>
+
+
+                    <Link
+                      to={`/produto?nome=${encodeURIComponent(
+                        produto.nome
+                      )}`}
+                      className="produto-ver"
+                    >
+                      Ver produto
+                      <span>
+                        →
+                      </span>
+                    </Link>
+
+                  </div>
+
+                </article>
+
+              )
+            )}
+
+          </div>
+
+        )}
 
       </div>
 
@@ -219,5 +251,4 @@ function Produto({ adicionarAoCarrinho }) {
 
 }
 
-
-export default Produto
+export default Produtos
