@@ -4569,4 +4569,229 @@ footer {
     letter-spacing: 3px !important;
   }
 
+}/* ==================================================
+   CORREÇÃO DEFINITIVA DE TEXTO NO CELULAR — ALVORA
+================================================== */
+
+@media (max-width: 600px) {
+
+  /* Impede a página de criar largura maior que a tela */
+
+  html,
+  body,
+  #root {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow-x: hidden !important;
+  }
+
+
+  /* Todos os principais blocos */
+
+  header,
+  main,
+  section,
+  footer,
+  nav,
+  div,
+  article,
+  aside {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+
+  /* Textos */
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  a,
+  button,
+  strong {
+    max-width: 100% !important;
+
+    white-space: normal !important;
+
+    overflow: visible !important;
+
+    text-overflow: clip !important;
+
+    overflow-wrap: break-word !important;
+
+    word-break: normal !important;
+
+    hyphens: none !important;
+  }
+
+
+  /* Links */
+
+  a {
+    word-break: break-word !important;
+  }
+
+
+  /* Imagens */
+
+  img {
+    max-width: 100% !important;
+    height: auto;
+  }
+
+
+  /* Hero */
+
+  .alvora-hero {
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    overflow: hidden !important;
+  }
+
+  .hero-content {
+    width: calc(100% - 30px) !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+
+  /* Produtos */
+
+  .alvora-produtos {
+    width: 100% !important;
+
+    overflow: hidden !important;
+  }
+
+  .produtos-container {
+    width: calc(100% - 30px) !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+  }
+
+  .produtos-grid {
+    width: 100% !important;
+
+    min-width: 0 !important;
+  }
+
+  .produto-card-alvora {
+    width: 100% !important;
+
+    min-width: 0 !important;
+  }
+
+  .produto-card-info {
+    width: 100% !important;
+
+    min-width: 0 !important;
+  }
+
+
+  /* Carrinho */
+
+  .carrinho-page {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    overflow: hidden !important;
+  }
+
+  .carrinho-container {
+    width: calc(100% - 30px) !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+  }
+
+  .carrinho-vazio {
+    width: calc(100% - 30px) !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .carrinho-vazio h1,
+  .carrinho-vazio p {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    overflow: visible !important;
+
+    white-space: normal !important;
+  }
+
+
+  /* Item do carrinho */
+
+  .carrinho-item {
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    max-width: 100% !important;
+  }
+
+  .carrinho-item-info {
+    min-width: 0 !important;
+
+    max-width: 100% !important;
+  }
+
+
+  /* Footer */
+
+  .alvora-footer {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    overflow: hidden !important;
+  }
+
+  .footer-conteudo {
+    width: calc(100% - 30px) !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+  }
+
+  .footer-marca,
+  .footer-links,
+  .footer-atendimento {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+  }
+
 }
